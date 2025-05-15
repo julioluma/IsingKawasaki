@@ -47,9 +47,9 @@ import io
 # Parámetros
 # ========================================
 file_in = "estados.txt" # Nombre del fichero de datos
-file_out = "AnimationT_2_32" # Nombre del fichero de salida (sin extensión)
+file_out = "AnimationT_2_128" # Nombre del fichero de salida (sin extensión)
 interval = 10 # Tiempo entre fotogramas en milisegundos
-save_to_file = False # False: muestra la animación por pantalla,
+save_to_file = True # False: muestra la animación por pantalla,
                      # True: la guarda en un fichero
 dpi = 150 # Calidad del vídeo de salida (dots per inch)
 
@@ -83,7 +83,7 @@ fig, ax = plt.subplots()
 
 # Define el rango de los ejes
 ax.axis("off")  # No muestra los ejes
-ax.set_title("Modelo de Ising-Kawasaki (Cada 100 PMc)")  # Título del gráfico
+ax.set_title("Modelo de Ising-Kawasaki (Cada 1000 PMc)")  # Título del gráfico
 
 cmap = ListedColormap(["#0000FF", "#00FFF0"])  # Azul para -1, Rojo para +1
 bounds = [-1.5, 0, 1.5]  # Límites para los valores discretos

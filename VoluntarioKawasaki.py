@@ -134,6 +134,11 @@ def simular_ising(filename, T, pasos, pasos_almacenamiento=100, pasos_promediar=
     N1 = int(N*(1+M)/2)
 
     for paso in range(pasos):
+        # Actualizar el porcentaje completado
+        porcentaje = (paso + 1) / pasos * 100
+        print(f"Progreso: {porcentaje:.2f}% completado", end="\r")  # Sobrescribe la línea anterior
+
+
         spines = Kawasaki(spines, beta)
         energia = energia_total(spines)
         magnetizacion1, magnetizacion2 = magnetizacion_promedio(spines, M)
@@ -185,7 +190,7 @@ def dist_densidad(spines):
 # ================================================================================
 # ================================================================================
 filename = "estado_inicial.txt"  # Nombre del archivo de entrada
-T = 1.5  # Temperatura
+T = 2  # Temperatura
 pasos = 10**6  # Número de pasos de Monte Carlo
 pasos_almacenamiento = 1000  # Pasos para almacenar el estado de los spines
 pasos_promediar = 1000  # Pasos para promediar la energía y la magnetización
