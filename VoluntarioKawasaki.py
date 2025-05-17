@@ -4,6 +4,18 @@ import numba as nb
 import time
 import os
 
+# Parámetros
+# ================================================================================
+# ================================================================================
+filename = "estado_inicial.txt"  # Nombre del archivo de entrada
+T = 3  # Temperatura
+pasos = 10**6  # Número de pasos de Monte Carlo
+Guardar_spines = True  # Guardar el estado de los spines para animar
+pasos_almacenamiento = 1000  # Pasos para almacenar el estado de los spines
+pasos_promediar = 1000  # Pasos para promediar la energía y la magnetización
+
+# ================================================================================
+# ================================================================================
 
 """def inicializar_spines(N, M):
     spines = np.empty((N, N), dtype=np.int32)
@@ -116,49 +128,56 @@ def Kawasaki(spines, beta):
 
 def simular_ising(filename, T, pasos, pasos_almacenamiento=100, pasos_promediar=1000):
     """Simula el modelo de Ising."""
-    
-    # Limpia el archivo de salida antes de comenzar
-    open("estados.txt", "w").close()
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"El archivo {filename} no existe.")
+    else:
 
-    beta = 1 / T
-    N, M, spines = inicializar_spines(filename)
-    guardar_spines_txt(spines, 0)
-    energias = []
-    magnetizaciones1 = []
-    magnetizaciones2 = []
-    M1 = []
-    M2 = []
-    E = []
-    Cv = []
-    Sus = []
-    N1 = int(N*(1+M)/2)
+        beta = 1 / T
+        N, M, spines = inicializar_spines(filename)
 
-    for paso in range(pasos):
-        # Actualizar el porcentaje completado
-        porcentaje = (paso + 1) / pasos * 100
-        print(f"Progreso: {porcentaje:.2f}% completado", end="\r")  # Sobrescribe la línea anterior
+        if Guardar_spines:
+            # Limpia el archivo de salida antes de comenzar
+            open("estados.txt", "w").close()
+            # Guarda el estado inicial
+            guardar_spines_txt(spines, 0)
+
+        energias = []
+        magnetizaciones1 = []
+        magnetizaciones2 = []
+        M1 = []
+        M2 = []
+        E = []
+        Cv = []
+        Sus = []
+        N1 = int(N*(1+M)/2)
+
+        for paso in range(pasos):
+            # Actualizar el porcentaje completado
+            porcentaje = (paso + 1) / pasos * 100
+            print(f"Progreso: {porcentaje:.2f}% completado", end="\r")  # Sobrescribe la línea anterior
 
 
-        spines = Kawasaki(spines, beta)
-        energia = energia_total(spines)
-        magnetizacion1, magnetizacion2 = magnetizacion_promedio(spines, M)
-        energias.append(energia)
-        magnetizaciones1.append(magnetizacion1)
-        magnetizaciones2.append(magnetizacion2)
-        
-        if paso % pasos_almacenamiento == 0:
-            # Guardar el estado de los spines en cada x pasos
-            guardar_spines_txt(spines, paso)
+            spines = Kawasaki(spines, beta)
+            energia = energia_total(spines)
+            magnetizacion1, magnetizacion2 = magnetizacion_promedio(spines, M)
+            energias.append(energia)
+            magnetizaciones1.append(magnetizacion1)
+            magnetizaciones2.append(magnetizacion2)
 
-        if paso % pasos_promediar == 0:
-            M1.append(np.mean(magnetizaciones1))
-            M2.append(np.mean(magnetizaciones2))
-            Sus.append(np.var(magnetizaciones1)/(N1*N*T))
-            magnetizaciones1 = []
-            magnetizaciones2 = []
-            E.append(np.mean(energias)/N**2)
-            Cv.append(np.var(energias)/N**2*T**2)
-            energias = []
+            if Guardar_spines:
+                if paso % pasos_almacenamiento == 0:
+                    # Guardar el estado de los spines en cada x pasos
+                    guardar_spines_txt(spines, paso)
+
+            if paso % pasos_promediar == 0:
+                M1.append(np.mean(magnetizaciones1))
+                M2.append(np.mean(magnetizaciones2))
+                Sus.append(np.var(magnetizaciones1)/(N1*N*T))
+                magnetizaciones1 = []
+                magnetizaciones2 = []
+                E.append(np.mean(energias)/N**2)
+                Cv.append(np.var(energias)/N**2*T**2)
+                energias = []
 
 
     return N, M, spines, E, M1, M2, Cv, Sus
@@ -186,16 +205,6 @@ def dist_densidad(spines):
     return dist, densidad
 # ================================================================================
 
-# Parámetros
-# ================================================================================
-# ================================================================================
-filename = "estado_inicial.txt"  # Nombre del archivo de entrada
-T = 2  # Temperatura
-pasos = 10**6  # Número de pasos de Monte Carlo
-pasos_almacenamiento = 1000  # Pasos para almacenar el estado de los spines
-pasos_promediar = 1000  # Pasos para promediar la energía y la magnetización
-# ================================================================================
-# ================================================================================
 
 N, M, spines_final, E, M1, M2, Cv, Sus = simular_ising(filename, T, pasos, pasos_almacenamiento, pasos_promediar)
 distribucion_densidad, densidad = dist_densidad(spines_final)

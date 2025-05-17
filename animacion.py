@@ -47,7 +47,7 @@ import io
 # Parámetros
 # ========================================
 file_in = "estados.txt" # Nombre del fichero de datos
-file_out = "AnimationT_2_128" # Nombre del fichero de salida (sin extensión)
+file_out = "AnimationT_1_128" # Nombre del fichero de salida (sin extensión)
 interval = 10 # Tiempo entre fotogramas en milisegundos
 save_to_file = True # False: muestra la animación por pantalla,
                      # True: la guarda en un fichero
