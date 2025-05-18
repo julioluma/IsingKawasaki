@@ -8,10 +8,10 @@ import os
 # ================================================================================
 # ================================================================================
 filename = "estado_inicial.txt"  # Nombre del archivo de entrada
-T = 3  # Temperatura
+T = 2.69  # Temperatura
 pasos = 10**6  # Número de pasos de Monte Carlo
 Guardar_spines = True  # Guardar el estado de los spines para animar
-pasos_almacenamiento = 1000  # Pasos para almacenar el estado de los spines
+pasos_almacenamiento = 100  # Pasos para almacenar el estado de los spines
 pasos_promediar = 1000  # Pasos para promediar la energía y la magnetización
 
 # ================================================================================
