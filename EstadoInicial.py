@@ -2,8 +2,9 @@ import numpy as np
 
 #Pramétros
 # ================================================================================
-N=64 # Número de filas
+N=32 # Número de filas
 M=0 # Magnetización promedio
+Random=False # True: espines aleatorios, False: espines ordenados
 # ================================================================================
 
 def inicializar_spines(N, M):
@@ -14,19 +15,25 @@ def inicializar_spines(N, M):
     spines[0, :] = -1
     spines[N-1, :] = 1
     
-    # Inicializar las filas intermedias con valores aleatorios
-    for i in range(1, N-1):
-        for j in range(N):
-            spines[i, j] = 1 if np.random.rand() > 0.5 else -1
-    
-    # Ajustar la suma para que sea 0
-    while np.sum(spines) != int(M*N*N):
-        # Seleccionar una posición aleatoria en las filas intermedias
-        i = np.random.randint(1, N-1)
-        j = np.random.randint(0, N)
-        
-        # Cambiar el signo del elemento seleccionado
-        spines[i, j] *= -1
+    if Random:
+        # Inicializar las filas intermedias con valores aleatorios
+        for i in range(1, N-1):
+            for j in range(N):
+                spines[i, j] = 1 if np.random.rand() > 0.5 else -1
+
+        # Ajustar la suma para que sea 0
+        while np.sum(spines) != int(M*N*N):
+            # Seleccionar una posición aleatoria en las filas intermedias
+            i = np.random.randint(1, N-1)
+            j = np.random.randint(0, N)
+
+            # Cambiar el signo del elemento seleccionado
+            spines[i, j] *= -1
+    else:
+        # Inicializar las filas intermedias con valores ordenados
+        for i in range(1, N-1):
+            for j in range(N):
+                spines[i, j] = 1 if i >= int(N*(M+1)/2) else -1
 
     return spines
 

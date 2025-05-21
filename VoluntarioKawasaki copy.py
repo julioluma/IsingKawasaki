@@ -265,5 +265,5 @@ if not os.path.exists("Figuras"):
     os.makedirs("Figuras")
 # Guardar el gráfico en la carpeta "Figuras"
 plt.tight_layout()
-plt.savefig(f"Figuras/N={N}_pMc={pasos}_M={M}.png", dpi=300, bbox_inches="tight")
+plt.savefig(f"Figuras/Ordenado_N={N}_pMc={pasos}_M={M}.png", dpi=300, bbox_inches="tight")
 plt.show()
