@@ -15,7 +15,7 @@ filename = "estado_inicial.txt" # Nombre del archivo de entrada, debe contener
                                 #   (...)
                                 #   s(N,1), s(N,2), ..., s(N,N)
                                 
-Temperaturas = [1, 1.5, 2, 2.25, 2.5, 2.75, 3] # Lista de temperaturas a simular
+Temperaturas = [1, 1.5, 2, 2.25, 2.5, 2.75, 3, 3.5, 4] # Lista de temperaturas a simular
 pasos = 10**6  # Número de pasos de Monte Carlo
 Guardar_spines = False  # Guardar el estado de los spines para animar
 pasos_almacenamiento = 100  # Pasos para almacenar el estado de los spines
@@ -162,7 +162,7 @@ def simular_ising(filename, T, pasos, pasos_almacenamiento=100, pasos_promediar=
         for paso in range(pasos):
             # Actualizar el porcentaje completado
             porcentaje = (paso + 1) / pasos * 100
-            print(f"Progreso: {porcentaje:.2f}% completado", end="\r")  # Sobrescribe la línea anterior
+            print(f"Progreso: {porcentaje:.2f}%", end="\r")  # Sobrescribe la línea anterior
 
 
             spines = Kawasaki(spines, beta)

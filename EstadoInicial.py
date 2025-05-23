@@ -2,7 +2,7 @@ import numpy as np
 
 #Pramétros
 # ================================================================================
-N=32 # Número de filas
+N=128 # Número de filas
 M=0 # Magnetización promedio
 Random=False # True: espines aleatorios, False: espines ordenados
 # ================================================================================
