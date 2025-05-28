@@ -1,0 +1,4 @@
+Temperatura, Magnetizacion promedio superior, Magnetizacion promedio inferior, Energía promedio, Calor especifico, Susceptibilidad magnetica
+1, -1.0, 1.0, -1.875, 0.0, 0.0
+1.5, -1.0, 1.0, -1.875, 0.0, 0.0
+2, -0.95648828125, 0.95648828125, -1.78548046875, 22.6342569375, 1.3219666332006454e-06

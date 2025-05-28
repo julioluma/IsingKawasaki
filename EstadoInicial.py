@@ -2,9 +2,9 @@ import numpy as np
 
 #Pramétros
 # ================================================================================
-N=128 # Número de filas
+N=32 # Número de filas
 M=0 # Magnetización promedio
-Random=False # True: espines aleatorios, False: espines ordenados
+Random=True # True: espines aleatorios, False: espines ordenados
 # ================================================================================
 
 def inicializar_spines(N, M):

@@ -104,13 +104,19 @@ def Kawasaki(spines, beta):
         j = np.random.randint(0, N)  # Seleccionar una columna
         S1 = spines[i, j]
         vecinos1 = spines[(i+1)%N, j] + spines[i, (j+1)%N] + spines[(i-1)%N, j] + spines[i, (j-1)%N] #+ spines[(i+1)%N, (j+1)%N] + spines[(i-1)%N, (j-1)%N] + spines[(i+1)%N, (j-1)%N] + spines[(i-1)%N, (j+1)%N]
-        for _ in range(4):  # intentos de intercambio
-            if 4 * S1 == vecinos1:
-                break  # Salir si no hay vecinos para intercambiar
-            a= np.random.randint(-1, 2)  # Seleccionar un vecino
-            b= np.random.randint(-1, 2)  # Seleccionar un vecino
-            if a == 0 and b == 0:
-                continue           
+        if 4 * S1 == vecinos1:
+            break  # Salir si no hay vecinos para intercambiar
+        nran0= np.random.randint(0, 3)  # Seleccionar un vecino
+        for vecino in range(4):
+            nran = (nran0 + vecino) % 4
+            if nran == 0:
+                a, b = 1, 0
+            elif nran == 1:
+                a, b = 0, 1
+            elif nran == 2:
+                a, b = -1, 0
+            elif nran == 3:
+                a, b = 0, -1     
             i2 = (i + a) % N
             j2 = (j + b) % N
             #i2 = np.random.randint(1, N-1)  # Seleccionar una fila intermedia
@@ -128,6 +134,7 @@ def Kawasaki(spines, beta):
                 spines[i, j] = spines[i2, j2]
                 spines[i2, j2] = aux
                 break  # Salir del bucle de intentos de intercambio
+        
             
 
     return spines
