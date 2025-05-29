@@ -46,7 +46,7 @@ import io
 
 # Parámetros
 # ========================================
-file_in = "estados.txt" # Nombre del fichero de datos
+file_in = "spines/spinesN_128_T=2.txt" # Nombre del fichero de datos
 file_out = "AnimationT_2.5_128" # Nombre del fichero de salida (sin extensión)
 interval = 10 # Tiempo entre fotogramas en milisegundos
 save_to_file = False # False: muestra la animación por pantalla,

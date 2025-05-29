@@ -8,6 +8,10 @@ import os
 if not os.path.exists("Resultados"):
     os.makedirs("Resultados")
 
+#Crear la carpeta "spines" si no existe
+if not os.path.exists("spines"):
+    os.makedirs("spines")
+
 # Parámetros
 # ================================================================================
 # ================================================================================
@@ -20,17 +24,17 @@ filename = "estado_inicial.txt" # Nombre del archivo de entrada, debe contener
                                 #   (...)
                                 #   s(N,1), s(N,2), ..., s(N,N)
                                 
-Temperaturas = [1, 1.5, 2, 2.25, 2.5, 2.75, 3, 3.5, 4, 4.5, 5.0, 5.5, 6.0] # Lista de temperaturas a simular
-Ns = [32] #, 64, 128] # Lista de tamaños de retículo a simular
+Temperaturas = [0.5, 1, 1.5, 2, 2.25, 2.5, 2.75, 3, 3.5, 4, 4.5, 5, 5.5, 6] # Lista de temperaturas a simular
+Ns = [128] # Lista de tamaños de retículo a simular
 M = 0
 pasos = 10**5  # Número de pasos de Monte Carlo
-Guardar_spines = False  # Guardar el estado de los spines para animar
+Guardar_spines = True  # Guardar el estado de los spines para animar
 pasos_almacenamiento = 100  # Pasos para almacenar el estado de los spines
 pasos_promediar = 100  # Pasos para promediar la energía y la magnetización
 
 # ================================================================================
 # ================================================================================
-
+@nb.njit
 def inicializar_spines(N, M):
     """Inicializa el spines con espines aleatorios (+1 o -1) y suma total igual a 0."""
     spines = np.empty((N, N), dtype=np.int32)
@@ -110,7 +114,7 @@ def guardar_spines_txt(spines, paso, filename="estados.txt"):
         np.savetxt(f, spines, fmt="%d", delimiter=",")  # Guarda la matriz de espines
         f.write("\n")  # Agrega una línea en blanco para separar los pasos
 
-
+@nb.njit
 def Kawasaki(spines, beta, N):
     """Implementa el algoritmo de Metropolis para actualizar el spines."""
     for _ in range((N-2) * N):  # N^2 intentos de actualización por paso
@@ -119,8 +123,8 @@ def Kawasaki(spines, beta, N):
         S1 = spines[i, j]
         vecinos1 = spines[(i+1)%N, j] + spines[i, (j+1)%N] + spines[(i-1)%N, j] + spines[i, (j-1)%N] #+ spines[(i+1)%N, (j+1)%N] + spines[(i-1)%N, (j-1)%N] + spines[(i+1)%N, (j-1)%N] + spines[(i-1)%N, (j+1)%N]
         if 4 * S1 == vecinos1:
-            break  # Salir si no hay vecinos para intercambiar
-        nran0= np.random.randint(0, 3)  # Seleccionar un vecino
+            continue  # Salir si no hay vecinos para intercambiar
+        nran0= np.random.randint(0, 4)  # Seleccionar un vecino
         for vecino in range(4):
             nran = (nran0 + vecino) % 4
             if nran == 0:
@@ -133,20 +137,16 @@ def Kawasaki(spines, beta, N):
                 a, b = 0, -1     
             i2 = (i + a) % N
             j2 = (j + b) % N
-            #i2 = np.random.randint(1, N-1)  # Seleccionar una fila intermedia
-            #j2 = np.random.randint(0, N)  # Seleccionar una columna
-            if S1 == spines[i2, j2]:
+            S2 = spines[i2, j2]
+            if S1 == S2:
                 continue
             if i2 == 0 or i2 == N-1 :
                 continue
             # Interacción con los vecinos
-            S2 = spines[i2, j2]
             vecinos2 = spines[(i2+1)%N, j2] + spines[i2, (j2+1)%N] + spines[(i2-1)%N, j2] + spines[i2, (j2-1)%N] #+ spines[(i2+1)%N, (j2+1)%N] + spines[(i2-1)%N, (j2-1)%N] + spines[(i2+1)%N, (j2-1)%N] + spines[(i2-1)%N, (j2+1)%N]
-            dE = (S1-S2)*(vecinos1 - vecinos2 - S2 + S1)
-            if dE < 0 or np.random.rand() < np.exp(-beta * dE):
-                aux = spines[i, j]
-                spines[i, j] = spines[i2, j2]
-                spines[i2, j2] = aux
+            dE = (S1-S2) * (vecinos1 - vecinos2 - S2 + S1)
+            if dE <= 0 or np.random.rand() < np.exp(-beta * dE):
+                spines[i, j], spines[i2,j2] = spines[i2, j2], spines[i,j]  # Intercambiar los espines
                 break  # Salir del bucle de intentos de intercambio
         
             
@@ -159,9 +159,9 @@ def simular_ising(estadoinicial, T, pasos, pasos_almacenamiento=100, pasos_prome
     beta = 1 / T
     if Guardar_spines:
         # Limpia el archivo de salida antes de comenzar
-        open("spinesN_" + str(N) + "_T=" + str(T) + ".txt", "w").close()
+        open("spines/spinesN_" + str(N) + "_T=" + str(T) + ".txt", "w").close()
         # Guarda el estado inicial
-        guardar_spines_txt(spines, 0, "spinesN_" + str(N) + "_T=" + str(T) + ".txt")
+        guardar_spines_txt(spines, 0, "spines/spinesN_" + str(N) + "_T=" + str(T) + ".txt")
     energias = []
     magnetizaciones1 = []
     magnetizaciones2 = []
@@ -186,15 +186,15 @@ def simular_ising(estadoinicial, T, pasos, pasos_almacenamiento=100, pasos_prome
         if Guardar_spines:
             if paso % pasos_almacenamiento == 0:
                 # Guardar el estado de los spines en cada x pasos
-                guardar_spines_txt(spines, paso)
+                guardar_spines_txt(spines, paso, "spines/spinesN_" + str(N) + "_T=" + str(T) + ".txt")
     M1 = np.mean(magnetizaciones1)
     M2 = np.mean(magnetizaciones2)
-    Sus = np.var(magnetizaciones1)/(N1*N*T)
-    E = np.mean(energias)/N**2
-    Cv = np.var(energias)/N**2*T**2
+    Sus = np.var(magnetizaciones1)/(N1*N*T**2)
+    E = np.mean(energias)/(N**2)
+    Cv = np.var(energias)/(N**2*T**2)
 
 
-    return N, M, spines, E, M1, M2, Cv, Sus
+    return spines, E, M1, M2, Cv, Sus
 
 
 
@@ -232,9 +232,9 @@ for N in Ns:
     for T in Temperaturas:
         # Ejecutar la simulación
         print(f"Simulando para T={T}...")
+        estadoinicial_copia = estadoinicial.copy()  # Copia del estado inicial para cada temperatura
 
-
-        N, M, spines_final, E, M1, M2, Cv, Sus = simular_ising(estadoinicial, T, pasos, pasos_almacenamiento, pasos_promediar)
+        spines_final, E, M1, M2, Cv, Sus = simular_ising(estadoinicial_copia, T, pasos, pasos_almacenamiento, pasos_promediar)
         distribucion_densidad, densidad = dist_densidad(spines_final)
         Nvector = np.arange(0, N)
 
