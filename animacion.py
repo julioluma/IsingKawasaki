@@ -43,13 +43,20 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.colors import ListedColormap, BoundaryNorm
 import numpy as np
 import io
+import os
+
+#Crear la carpeta "Animations" si no existe
+if not os.path.exists("Animations"):
+    os.makedirs("Animations")
 
 # Parámetros
 # ========================================
-file_in = "spines/spinesN_128_T=2.txt" # Nombre del fichero de datos
-file_out = "AnimationT_2.5_128" # Nombre del fichero de salida (sin extensión)
+N = 128 # Número de filas y columnas del retículo
+T = 4.5 # Temperatura del sistema
+file_in = "spines/spinesN_" + str(N) + "_T=" + str(T) + ".txt" # Nombre del fichero de datos
+file_out = "Animations/AnimationT_" + str(T) + "_" + str(N) # Nombre del fichero de salida (sin extensión)
 interval = 10 # Tiempo entre fotogramas en milisegundos
-save_to_file = False # False: muestra la animación por pantalla,
+save_to_file = True # False: muestra la animación por pantalla,
                      # True: la guarda en un fichero
 dpi = 150 # Calidad del vídeo de salida (dots per inch)
 
@@ -83,7 +90,7 @@ fig, ax = plt.subplots()
 
 # Define el rango de los ejes
 ax.axis("off")  # No muestra los ejes
-ax.set_title("Modelo de Ising-Kawasaki (Cada 1000 PMc)")  # Título del gráfico
+ax.set_title("Modelo de Ising-Kawasaki ")  # Título del gráfico
 
 cmap = ListedColormap(["#0000FF", "#00FFF0"])  # Azul para -1, Rojo para +1
 bounds = [-1.5, 0, 1.5]  # Límites para los valores discretos

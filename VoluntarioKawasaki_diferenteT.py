@@ -25,8 +25,8 @@ filename = "estado_inicial.txt" # Nombre del archivo de entrada, debe contener
                                 #   s(N,1), s(N,2), ..., s(N,N)
                                 
 Temperaturas = [0.5, 1, 1.5, 2, 2.25, 2.5, 2.75, 3, 3.5, 4, 4.5, 5, 5.5, 6] # Lista de temperaturas a simular
-Ns = [128] # Lista de tamaños de retículo a simular
-M = 0
+Ns = [32, 64] # Lista de tamaños de retículo a simular
+M = 0  # Magnetización promedio del sistema, debe ser un valor entre -1 y 1
 pasos = 10**5  # Número de pasos de Monte Carlo
 Guardar_spines = True  # Guardar el estado de los spines para animar
 pasos_almacenamiento = 100  # Pasos para almacenar el estado de los spines
