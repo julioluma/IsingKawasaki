@@ -217,7 +217,7 @@ if not os.path.exists("Tiempos"):
 with open("Tiempos/PC_N" + str(N) + "_PMc_" + str(pasos) + ".txt", "w") as f_tiempo:
     f_tiempo.write("threads,tiempo_segundos\n")
     estadoinicial = inicializar_spines(N, M)  # Inicializar los espines
-    for threads in [1, 2, 3, 4]:
+    for threads in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
         nb.set_num_threads(threads)
         inicio = time.time()
         spines_final, E, M1, M2, Cv, Sus = simular_ising(estadoinicial, T, pasos, pasos_almacenamiento, pasos_promediar)
