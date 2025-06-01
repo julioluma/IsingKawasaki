@@ -15,6 +15,7 @@ if not os.path.exists("Graficas"):
 # 3: Energia promedio
 # 4: Calor especifico
 # 5: Susceptibilidad magnetica
+
 variable = 5 # Cambia este valor para graficar diferentes variables
 Ns = [128, 64, 32]  # Lista de tamaños N para las simulaciones
 Guardar = True  # Si es True, guarda la gráfica en un archivo
@@ -31,6 +32,8 @@ elif variable ==4:
     nombre_variable = "Calor específico"  
 elif variable ==5:
     nombre_variable = "Susceptibilidad magnética"
+else:
+    raise ValueError("Variable no válida. Debe ser un número entre 1 y 5.")
 
 plt.figure(figsize=(8, 5))
 for N in Ns:
