@@ -19,6 +19,7 @@ if not os.path.exists("Graficas"):
 variable = 5 # Cambia este valor para graficar diferentes variables
 Ns = [128, 64, 32]  # Lista de tamaños N para las simulaciones
 Guardar = True  # Si es True, guarda la gráfica en un archivo
+Intentos = 3 # Número de simulaciones realizadas
 # ================================================================================
 
 
@@ -36,16 +37,28 @@ else:
     raise ValueError("Variable no válida. Debe ser un número entre 1 y 5.")
 
 plt.figure(figsize=(8, 5))
-for N in Ns:
-    filename = f"Resultados/Resultados_N={N}_pMc=100000_M=0.txt"
-    data = np.loadtxt(filename, delimiter=",", skiprows=1)
-    
-    temperatura = data[:, 0]  # Primera columna (Temperatura)
-    
-    variable_data = data[:, variable]  # Segunda columna (Magnetización promedio superior)
-    
-    plt.plot(temperatura, variable_data, marker='o', label=f'N={N}')
 
+for N in Ns:
+    # Carga el primer archivo para saber cuántas temperaturas hay
+    filename = f"Resultados/Resultados1_N={N}_pMc=100000_M=0.txt"
+    data = np.loadtxt(filename, delimiter=",", skiprows=1)
+    temperatura = data[:, 0]
+    variable_data = np.zeros((len(temperatura), Intentos))
+    for t in range(len(temperatura)):
+        variable_data[t, 0] = data[t, variable]
+    # Carga el resto de los intentos
+    for intento in range(2, Intentos + 1):
+        filename = f"Resultados/Resultados{intento}_N={N}_pMc=100000_M=0.txt"
+        data = np.loadtxt(filename, delimiter=",", skiprows=1)
+        for t in range(len(temperatura)):
+            variable_data[t, intento-1] = data[t, variable]
+    s = np.std(variable_data, axis=1)
+    mean_variable = np.mean(variable_data, axis=1)
+    eb = plt.errorbar(temperatura, mean_variable, yerr=s, fmt='o', label=f'N={N}', capsize=5)
+    color = eb.lines[0].get_color()
+    plt.fill_between(temperatura, mean_variable - s, mean_variable + s, alpha=0.1, color=color)
+    plt.plot(temperatura, mean_variable, linestyle='-', alpha=0.7, color=color)  # Línea que une los puntos
+    
 # Graficar
 plt.xlabel("Temperatura")
 plt.ylabel(nombre_variable)

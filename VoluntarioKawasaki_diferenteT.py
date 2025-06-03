@@ -25,12 +25,13 @@ filename = "estado_inicial.txt" # Nombre del archivo de entrada, debe contener
                                 #   s(N,1), s(N,2), ..., s(N,N)
                                 
 Temperaturas = [0.5, 1, 1.5, 2, 2.25, 2.5, 2.75, 3, 3.5, 4, 4.5, 5, 5.5, 6] # Lista de temperaturas a simular
-Ns = [32, 64] # Lista de tamaños de retículo a simular
+Ns = [32, 64, 128] # Lista de tamaños de retículo a simular
 M = 0  # Magnetización promedio del sistema, debe ser un valor entre -1 y 1
 pasos = 10**5  # Número de pasos de Monte Carlo
 Guardar_spines = True  # Guardar el estado de los spines para animar
 pasos_almacenamiento = 100  # Pasos para almacenar el estado de los spines
 pasos_promediar = 100  # Pasos para promediar la energía y la magnetización
+Intento = 3 # Intento para cálculo de errores
 
 # ================================================================================
 # ================================================================================
@@ -246,7 +247,7 @@ for N in Ns:
 
 
     # Guardar los resultados en un archivo de texto
-    with open(f"Resultados/Resultados_N={N}_pMc={pasos}_M={M}.txt", "w") as f:
+    with open(f"Resultados/Resultados{Intento}_N={N}_pMc={pasos}_M={M}.txt", "w") as f:
         f.write("Temperatura, Magnetizacion promedio superior, Magnetizacion promedio inferior, Energia promedio, Calor especifico, Susceptibilidad magnetica\n")
         for i in range(len(Temperaturas)):
             f.write(f"{Temperaturas[i]}, {M1Vec[i]}, {M2Vec[i]}, {EVec[i]}, {CvVec[i]}, {SusVec[i]}\n")
